@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en_US">
+<head>
+	<title>Random Trivia</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Boogaloo" rel="stylesheet">
+
+	<style>
+		 body{
+		 	text-align: center;
+		 	padding: 5rem;
+		 	background: linear-gradient(
+		 		90deg, black, white, white, black);	
+		 }
+
+	</style> 
+
+</head>
+<body>
+	<div id="main">
+		<div id="#banner">
+			<h1>Put your trivia knowledge to the test!</h1>
+			<div id="time">
+			</div>
+		</div>
+
+		<div id="content">
+		</div>
+		<br><br><br><br><br><br><br>
+
+	</div>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.js"></script>
+
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+
+		var questions = [
+			'Who is the first pokemon?',
+			'What is the largest single cell organism?',
+			'What are the Teenage Mutant Nijna Turtles named after?',
+			'What theorum did Albert Einstien publish?',
+			'The first vehicle produced by Honda was:',
+			'Who painted "Starry Night"?',
+			'What does the car brand Lamborghini name their cars after?',
+			'On average, what is the distance between the Earth and Sun?',
+			'If something is oleophobic it will?',
+			'Who was the titan Cronus youngest son'];
+
+		var answerArray = [
+			['Mew', 'Bulbasaur', 'Rhydon', 'Arceus'],
+			['Ostrich Egg', 'Potato', 'Caulerpa taxifolia', 'Physalia physalis'],
+			['Greek Gods', 'Italian Artists', 'English Poets', 'American War Heros'],
+			['Special Relativity', 'Gravity', 'Dark Matter', 'Electricity'],
+			['T360', 'S500', 'Civic', 'D-Type'],
+			['Pablo Picasso', 'Vincent van Gogh', 'Andy Warhol', 'Leonardo da Vinci'],
+			['Race Horses', 'Italian Mountains', 'Roman Dogs of War', 'Spanish Bulls'],
+			['93 Million Miles', '240 Thousand Miles', '67 Million Miles', '142 Million Miles'],
+			['Repel Electrons', 'Attract Protons', 'Repel Water', 'Negate Magnetism'],
+			['Chiron', 'Hades', 'Poseidon', 'Zeus']];
+		
+		var correctArray = [
+			'Rhydon',
+			'Caulerpa taxifolia',
+			'Italian Artists',
+			'Special Relativity',
+			'D-Type',
+			'Vincent van Gogh',
+			'Spanish Bulls',
+			'93 Million Miles',
+			'Repel Water',
+			'Zeus'];
+
+		var gifArray = [
+			'"https://giphy.com/embed/I54hFotDiu0Pm" width="480" height="300" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/3oxOCdRCzsIW9GPqWA" width="480" height="259" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/TdVwHHUoUmduU" width="480" height="270" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/l0MYKDdeFJxUTSDbW" width="480" height="294" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/dX5IULy6PVTmE" width="480" height="300" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/LqYVYA0eksgSc" width="480" height="198" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/Su2GyF7V6O0JG" width="480" height="274" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/qJ5tL7EIM7tIs" width="480" height="300" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/qEYjUMEoAYuxG" width="480" height="270" frameBorder="0" class="giphy-embed"',
+			'"https://giphy.com/embed/7amqZVkxUxRT2" width="480" height="300" frameBorder="0" class="giphy-embed"'];
+
+		var totalScore = 0;
+		var correctAnswers = 0;
+		var wrongAnswers = 0;
+		var answer;
+		var i = 0;
+
+		var counter = 30;
+		var intervalId;
+
+		// Displays Start Screen
+		homeScreen();
+
+		// Begins When User Presses 'START GAME'
+		$('#start-game').click(function(event) {
+			questionDisplay();
+			countdown();
+		});
+
+		// Brings User Back to the Beginning of the Game
+		$("body").on("click", "#reset-game", function(event){       
+			resetGame();
+		}); 
+
+		// Checks if User Guess is Correct
+		$("body").on("click", ".answer", function(event){
+		    answer = $(this).text();
+		    if(answer === correctArray[i]) {
+		        
+		        clearInterval(intervalId);
+		        correctDisplay();
+		    } else {  
+		        clearInterval(intervalId);
+		        wrongDisplay();
+		    }
+		}); 
+
+
+		// Start Screen of Game
+		function homeScreen() {
+			$('#content').html('');
+			$('#time').html('<img src="Assets/EatDrinkThinkWin.jpg" style="width: 15rem;">');
+			$('#content').append('<h3>Prepare yourself for some trivia!</h3>');
+			$('#content').append('<h5>There are a total of 10 questions to answer.</h5>');
+			$('#content').append('<h5>You will be given 10 seconds to answer each question.</h5>');
+			$('#content').append('<h5>Good Luck!</h5>');
+			$('#content').append('<button type="button" class="btn btn-secondary btn-lg" id="start-game">START GAME</button>');
+		}
+
+		// End Screen of Game
+		function endScreen() {
+			$('#content').html('');
+			$('#content').append('<h3>GAME OVER!</h3>');
+			$('#content').append('<h5>Correct: ' + correctAnswers + '</h5>');
+			$('#content').append('<h5>Incorrect: ' + wrongAnswers + '</h5>');
+			$('#content').append('<h5>Total Score: ' + totalScore + '%</h5>');
+			$('#content').append('<h4 id="reset-game">PLAY AGAIN</h4>');
+		}
+
+		// Displays the Questions to the User
+		function questionDisplay() {
+			$('#content').html('');
+			$('#time').html();
+			$('#time').html('<img src="Assets/EatDrinkThinkWin.jpg" style="width: 15rem;">');
+			$('#time').append('<span id="timer"></span>');	
+			$('#content').append('<h3 class="question">' + questions[i] + '</h3>');
+			$('#content').append('<h4 class="answer">' + answerArray[i][0] + '</h4>');
+			$('#content').append('<h4 class="answer">' + answerArray[i][1] + '</h4>');
+			$('#content').append('<h4 class="answer">' + answerArray[i][2] + '</h4>');
+			$('#content').append('<h4 class="answer">' + answerArray[i][3] + '</h4>');
+		}
+
+		// Displays if User Guesses Correctly
+		function correctDisplay() {
+			correctAnswers++;
+			totalScore = correctAnswers * 10;
+			$('#content').html('');
+			$('#content').append('<h3 class="temp">CORRECT! ' + correctArray[i] + '</h3>');
+			$('#content').append('<iframe src=' + gifArray[i] + '></iframe>');
+			setTimeout(nextDisplay, 4000);
+		}
+
+		// Displays if User Guesses Incorrectly
+		function wrongDisplay() {
+			wrongAnswers++;
+			$('#content').html('');
+			$('#content').append('<h3 class="temp">WRONG! ' + correctArray[i] + '</h3>');
+			$('#content').append('<iframe src=' + gifArray[i] + '></iframe>');
+			setTimeout(nextDisplay, 4000);
+		}
+
+		// Displays if User Runs Out of Time
+		function timedOutDisplay() {
+			wrongAnswers++;
+			$('#content').html('');
+			$('#content').append('<h3 class="temp">TIMES UP! ' + correctArray[i] + '</h3>');
+			$('#content').append('<iframe src=' + gifArray[i] + '></iframe>');
+			setTimeout(nextDisplay, 4000);
+		}
+
+		// Brings on the Next Question Display and Resets Counter Time 
+		function nextDisplay() {
+			if (i < 9) {
+				i++;
+				questionDisplay();
+				countdown();
+				counter = 30;
+			} else {
+				setTimeout(endScreen, 10900);
+			}
+
+		}
+
+		// Timer Function For Each Question (30sec)
+		function countdown() {
+			intervalId = setInterval(decrement, 1000);
+			function decrement() {
+			counter--;
+			$("#timer").html("<h2>" + counter + "</h2>");
+				if (counter === 0) {
+					clearInterval(intervalId);
+					timedOutDisplay();
+				}
+			}
+		}
+
+		// Resets the Game Variables and Returns User to Start Screen
+		function resetGame() {
+		    i = 0;
+		    correctAnswers = 0;
+		    wrongAnswers = 0;
+		    totalScore = 0;
+		    timedOut = 0;
+		    counter = 30;
+		    questionDisplay();
+		    countdown();
+		}
+		});
+	</script>
+</body>
+</html>
